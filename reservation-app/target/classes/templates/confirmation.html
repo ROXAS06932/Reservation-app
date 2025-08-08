@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>予約確認</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}">
+  <script th:src="@{/js/validation.js}" defer></script>
+</head>
+<body>
+  <h1>予約内容の確認</h1>
+  <form th:action="@{/confirm}" th:object="${reservation}" method="post">
+    <p>名前： <span th:text="${reservation.name}"></span></p>
+    <p>メール： <span th:text="${reservation.email}"></span></p>
+    <p>電話番号： <span th:text="${reservation.phoneNumber}"></span></p>
+    <p>予約日時： <span th:text="${#temporals.format(reservation.reservationTime, 'yyyy-MM-dd HH:mm')}"></span></p>
+
+    <input type="hidden" th:field="*{name}" />
+    <input type="hidden" th:field="*{email}" />
+    <input type="hidden" th:field="*{phoneNumber}" />
+    <input type="hidden" th:field="*{reservationTime}" />
+
+    <button type="submit">予約を確定する</button>
+  </form>
+</body>
+</html>

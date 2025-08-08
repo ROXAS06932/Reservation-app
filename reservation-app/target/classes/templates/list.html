@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>予約一覧</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}">
+  <script th:src="@{/js/validation.js}" defer></script>
+</head>
+<body>
+  <header>
+    <h1>予約一覧</h1>
+    <nav>
+      <a th:href="@{/home}">ホーム</a>
+      <a th:href="@{reserve}">予約追加</a>
+      <a th:href="@{/reservations}">予約一覧を表示</a>
+      <form th:action="@{/logout}" method="post" style="display: inline;">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+        <button type="submit">ログアウト</button>
+      </form>
+    </nav>
+  </header>
+
+  <main>
+    <div class="form-container">
+      <div class="resrvation-list">
+        <div class="resrvation-card" th:each="r : ${reservations}">
+          <div class="card-border">
+            <h2 th:text="'予約ID： ' + ${r.id}"></h2>
+            <p><strong>名前：</strong> <span th:text="${r.name}"></span></p>
+            <p><strong>メール：</strong> <span th:text="${r.email}"></span></p>
+            <p><strong>電話番号：</strong> <span th:text="${r.phoneNumber}"></span></p>
+            <p><strong>予約日時：</strong> <span th:text="${r.reservationTime != null ? #temporals.format(r.reservationTime, 'yyyy-MM-dd HH:mm') : '未定'}"></span></p>
+            <p><strong>ステータス:</strong> 
+              <span th:text="${r.status != null ? r.status.label : '未定'}"
+                    th:classappend="${r.status != null ? r.status.getCssClass() : 'text-muted'}"></span>
+            </p>
+    
+            <div class="actions" sec:authorize="hasRole('ROLE_ADMIN')">
+              <a th:href="@{/delete/{id}(id=${r.id})}" onclick="return confirm('本当に削除しますか？')">削除</a>
+            </div>
+    
+            <div class="actions" sec:authorize="hasRole('ROLE_USER') and !hasRole('ROLE_ADMIN')">
+              <a th:href="@{/edit/{id}(id=${r.id})}">編集</a>
+              <a th:href="@{/reservations/cancel/{id}(id=${r.id})}">キャンセル</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flash-message" th:if="${flashMessage}">
+      <p th:text="${flashMessage}"></p>
+    </div>
+  </main>
+</body>
+</html>

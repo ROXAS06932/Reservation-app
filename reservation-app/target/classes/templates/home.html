@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>ホーム</title>
+  <script th:src="@{/js/validation.js}" defer></script>
+</head>
+<body>
+  <header>
+    <h1>ようこそ、<span sec:authentication="name">ユーザー名</span>さん！</h1>
+    <form th:action="@{/logout}" method="post">
+      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+      <button type="submit">ログアウト</button>
+    </form>
+  </header>
+
+  <main>
+    <section sec:authorize="hasRole('ROLE_ADMIN')">
+      <h2>管理者ページ</h2>
+      <a th:href="@{/admin/reservations}">予約一覧を表示</a>
+    </section>
+
+    <section sec:authorize="hasRole('ROLE_USER')">
+      <h1>ようこそ！ログインに成功しました！！</h1>
+      <h2>ユーザーページ</h2>
+      <form th:action="@{/reserve}" method="get">
+        <button type="submit">予約開始</button>
+      </form>
+      <a th:href="@{/reservations}">予約一覧を表示</a>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 予約app.com</p>
+  </footer>
+  
+</body>
+</html>
